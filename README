@@ -13,7 +13,7 @@ Quickstart
     $ rhc app create mediawiki php-5.4 mysql-5.5 
 3) Add this upstream mediawiki repo
     $ cd mediawiki
-    $ git remote add upstream -m master git://github.com/openshift-quickstart/mediawiki-example.git
+    $ git remote add upstream -m master git://github.com/ns01/mediawiki-example.git
     $ git pull -s recursive -X theirs upstream master
 4) Then push the repo upstream
     $ git push
