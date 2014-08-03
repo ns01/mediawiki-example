@@ -6,9 +6,6 @@
 
 set -e
 
-base_version=1.19
-version=1.19.15
-
 if [ -z $OPENSHIFT_MYSQL_DB_HOST ]
 then
     echo 1>&2
@@ -19,16 +16,8 @@ then
     exit 5
 fi
 
-# Download and extract mediawiki
-if [[ ! -d ${OPENSHIFT_DATA_DIR}/mediawiki-${version} ]]
-then
-    cd ${OPENSHIFT_DATA_DIR}
-
-    wget http://releases.wikimedia.org/mediawiki/${base_version}/mediawiki-${version}.tar.gz
-    tar xf mediawiki-${version}.tar.gz
-
-    cd - > /dev/null
-fi
+# Download mediawiki
+git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git
 
 # Confirm database exists, if not create it
 if ! /usr/bin/mysql -u "$OPENSHIFT_MYSQL_DB_USERNAME" --password="$OPENSHIFT_MYSQL_DB_PASSWORD" -h "$OPENSHIFT_MYSQL_DB_HOST" -P "$OPENSHIFT_MYSQL_DB_PORT" -e "show tables;" openshift_mediawiki > /dev/null 2>&1
