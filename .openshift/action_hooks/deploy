@@ -17,7 +17,14 @@ then
 fi
 
 # Download mediawiki
-git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git
+if [[ ! -d ${OPENSHIFT_DATA_DIR}/mediawiki ]]
+then
+    cd ${OPENSHIFT_DATA_DIR}
+
+    git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git
+
+    cd - > /dev/null
+fi
 
 # Confirm database exists, if not create it
 if ! /usr/bin/mysql -u "$OPENSHIFT_MYSQL_DB_USERNAME" --password="$OPENSHIFT_MYSQL_DB_PASSWORD" -h "$OPENSHIFT_MYSQL_DB_HOST" -P "$OPENSHIFT_MYSQL_DB_PORT" -e "show tables;" openshift_mediawiki > /dev/null 2>&1
@@ -66,7 +73,7 @@ then
     mkdir ${OPENSHIFT_REPO_DIR}/php
 fi
 
-cp -r ${OPENSHIFT_DATA_DIR}/mediawiki-${version}/* ${OPENSHIFT_REPO_DIR}/php/
+cp -r ${OPENSHIFT_DATA_DIR}/mediawiki/core/* ${OPENSHIFT_REPO_DIR}/php/
 cp -r ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/LocalSettings.php ${OPENSHIFT_REPO_DIR}/php/
 
 sed -i "s/MEDIAWIKI_UPGRADE_KEY/${upgrade_key}/;s/MEDIAWIKI_SECRET_KEY/${secret_key}/" ${OPENSHIFT_REPO_DIR}/php/LocalSettings.php
